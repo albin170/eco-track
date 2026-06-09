@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Sign In</title>
+  <meta name="description" content="Sign in or create your EcoTrack account to start tracking your carbon footprint." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+  <!-- Animated background particles -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <div class="login-layout">
+
+    <!-- ── LEFT PANEL ── -->
+    <div class="left-panel">
+      <div class="left-content">
+        <div class="brand">
+          <div class="brand-logo">
+            <svg width="40" height="40" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2C8 2 3 8 3 14c0 4 2 7.5 5 9.5L14 26l6-2.5c3-2 5-5.5 5-9.5C25 8 20 2 14 2z" fill="url(#lg1)" opacity="0.9"/>
+              <path d="M14 8c-3 2-5 5-5 8 0 1.5.5 3 1.5 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M14 8c2 3 2 6 0 10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="lg1" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#4ade80"/>
+                  <stop offset="100%" stop-color="#16a34a"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span>EcoTrack</span>
+          </div>
+        </div>
+
+        <div class="hero-text">
+          <h1>Track Your<br/><span class="gradient-text">Carbon Footprint.</span><br/>Build a Greener Future.</h1>
+          <p>Join thousands of people discovering their environmental impact and taking action for the planet.</p>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-pill">🌱 <strong>12k+</strong> users</div>
+          <div class="stat-pill">🌍 <strong>450t</strong> CO₂ saved</div>
+          <div class="stat-pill">⭐ <strong>98k</strong> actions done</div>
+        </div>
+
+        <div class="features-list">
+          <div class="feature-item">
+            <span class="feature-icon">📊</span>
+            <div>
+              <div class="feature-title">Personal Carbon Calculator</div>
+              <div class="feature-desc">Know your exact footprint in minutes</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🤖</span>
+            <div>
+              <div class="feature-title">AI Sustainability Assistant</div>
+              <div class="feature-desc">Get personalized eco advice 24/7</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🏆</span>
+            <div>
+              <div class="feature-title">Eco Challenges & Rewards</div>
+              <div class="feature-desc">Earn badges and climb the leaderboard</div>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="feature-icon">🔮</span>
+            <div>
+              <div class="feature-title">Future Earth Simulator</div>
+              <div class="feature-desc">See your impact with real-time sliders</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT PANEL ── -->
+    <div class="right-panel">
+      <div class="form-card" id="formCard">
+
+        <!-- Tab switcher -->
+        <div class="form-tabs">
+          <button class="form-tab active" id="tabSignIn" onclick="showTab('signin')">Sign In</button>
+          <button class="form-tab" id="tabRegister" onclick="showTab('register')">Create Account</button>
+        </div>
+
+        <!-- ── SIGN IN FORM ── -->
+        <div class="form-panel active" id="panelSignin">
+          <div class="form-welcome">
+            <h2>Welcome back! 👋</h2>
+            <p>Sign in to continue your eco journey</p>
+          </div>
+          <div class="error-box" id="signinError" style="display:none"></div>
+          <form id="signinForm" onsubmit="handleSignin(event)" novalidate>
+            <div class="field-group">
+              <label for="signinEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon">📧</span>
+                <input type="email" id="signinEmail" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="signinPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="signinPassword" placeholder="Your password" autocomplete="current-password" required />
+                <button type="button" class="toggle-pw" onclick="togglePassword('signinPassword', this)">👁</button>
+              </div>
+            </div>
+            <button type="submit" class="btn-submit" id="signinBtn">
+              <span class="btn-text">Sign In →</span>
+              <span class="btn-loader" style="display:none">⏳</span>
+            </button>
+          </form>
+          <div class="form-divider"><span>or</span></div>
+          <button class="btn-guest" onclick="continueAsGuest()">Continue as Guest 🌿</button>
+          <p class="form-switch">Don't have an account? <a href="#" onclick="showTab('register')">Create one free</a></p>
+        </div>
+
+        <!-- ── REGISTER FORM ── -->
+        <div class="form-panel" id="panelRegister">
+          <div class="form-welcome">
+            <h2>Join EcoTrack 🌱</h2>
+            <p>Create your free account and start making a difference</p>
+          </div>
+          <div class="error-box" id="registerError" style="display:none"></div>
+          <div class="success-box" id="registerSuccess" style="display:none"></div>
+          <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+            <div class="field-group">
+              <label for="regUsername">Username</label>
+              <div class="input-wrap">
+                <span class="input-icon">🧑</span>
+                <input type="text" id="regUsername" placeholder="e.g. eco_warrior" autocomplete="username" required minlength="3" />
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="regEmail">Email address</label>
+              <div class="input-wrap">
+                <span class="input-icon">📧</span>
+                <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email" required />
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="regPassword">Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regPassword" placeholder="At least 6 characters" autocomplete="new-password" required minlength="6" />
+                <button type="button" class="toggle-pw" onclick="togglePassword('regPassword', this)">👁</button>
+              </div>
+              <div class="password-strength" id="pwStrength">
+                <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+                <span class="strength-label" id="strengthLabel">Enter password</span>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="regConfirm">Confirm Password</label>
+              <div class="input-wrap">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="regConfirm" placeholder="Repeat password" required />
+              </div>
+            </div>
+            <button type="submit" class="btn-submit" id="registerBtn">
+              <span class="btn-text">Create Account 🌍</span>
+              <span class="btn-loader" style="display:none">⏳</span>
+            </button>
+          </form>
+          <p class="form-switch">Already have an account? <a href="#" onclick="showTab('signin')">Sign in</a></p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script>
+    // ── If already logged in, go directly to app ──
+    if (isLoggedIn()) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Tab switching ──
+    function showTab(tab) {
+      document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.form-panel').forEach(p => p.classList.remove('active'));
+      if (tab === 'signin') {
+        document.getElementById('tabSignIn').classList.add('active');
+        document.getElementById('panelSignin').classList.add('active');
+      } else {
+        document.getElementById('tabRegister').classList.add('active');
+        document.getElementById('panelRegister').classList.add('active');
+      }
+      // Clear errors
+      ['signinError','registerError','registerSuccess'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+    }
+
+    // ── Password toggle ──
+    function togglePassword(fieldId, btn) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === 'password' ? 'text' : 'password';
+      btn.textContent = field.type === 'password' ? '👁' : '🙈';
+    }
+
+    // ── Password strength ──
+    document.getElementById('regPassword').addEventListener('input', function() {
+      const val = this.value;
+      const fill = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      let score = 0;
+      if (val.length >= 6) score++;
+      if (val.length >= 10) score++;
+      if (/[A-Z]/.test(val)) score++;
+      if (/[0-9]/.test(val)) score++;
+      if (/[^A-Za-z0-9]/.test(val)) score++;
+      const pct = (score / 5) * 100;
+      fill.style.width = pct + '%';
+      const colors = ['#ef4444','#f97316','#fbbf24','#22c55e','#16a34a'];
+      const labels = ['Very Weak','Weak','Fair','Strong','Very Strong'];
+      fill.style.background = colors[score - 1] || '#334155';
+      label.textContent = score > 0 ? labels[score - 1] : 'Enter password';
+    });
+
+    // ── Sign In ──
+    function handleSignin(e) {
+      e.preventDefault();
+      const email = document.getElementById('signinEmail').value.trim();
+      const password = document.getElementById('signinPassword').value;
+      const errEl = document.getElementById('signinError');
+
+      if (!email || !password) {
+        showError(errEl, 'Please fill in all fields.');
+        return;
+      }
+
+      setLoading('signinBtn', true);
+      setTimeout(() => {
+        const result = loginUser(email, password);
+        setLoading('signinBtn', false);
+        if (result.ok) {
+          window.location.href = 'index.html';
+        } else {
+          showError(errEl, result.error);
+        }
+      }, 600);
+    }
+
+    // ── Register ──
+    function handleRegister(e) {
+      e.preventDefault();
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      const errEl = document.getElementById('registerError');
+      const sucEl = document.getElementById('registerSuccess');
+
+      if (!username || !email || !password || !confirm) {
+        showError(errEl, 'Please fill in all fields.'); return;
+      }
+      if (username.length < 3) {
+        showError(errEl, 'Username must be at least 3 characters.'); return;
+      }
+      if (password.length < 6) {
+        showError(errEl, 'Password must be at least 6 characters.'); return;
+      }
+      if (password !== confirm) {
+        showError(errEl, 'Passwords do not match.'); return;
+      }
+
+      setLoading('registerBtn', true);
+      setTimeout(() => {
+        const result = registerUser(username, email, password);
+        setLoading('registerBtn', false);
+        if (result.ok) {
+          errEl.style.display = 'none';
+          sucEl.textContent = '✅ Account created! Signing you in…';
+          sucEl.style.display = 'block';
+          setTimeout(() => {
+            loginUser(email, password);
+            window.location.href = 'index.html';
+          }, 1000);
+        } else {
+          showError(errEl, result.error);
+        }
+      }, 700);
+    }
+
+    // ── Guest ──
+    function continueAsGuest() {
+      const result = registerUser('Guest_' + Math.floor(Math.random()*9999), 'guest_' + Date.now() + '@guest.local', 'guest123');
+      if (result.ok) {
+        loginUser(result.user.email, 'guest123');
+        window.location.href = 'index.html';
+      }
+    }
+
+    // ── Helpers ──
+    function showError(el, msg) {
+      el.textContent = '⚠️ ' + msg;
+      el.style.display = 'block';
+      el.style.animation = 'none';
+      requestAnimationFrame(() => { el.style.animation = 'shakeX 0.4s'; });
+    }
+
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.querySelector('.btn-text').style.display = loading ? 'none' : 'inline';
+      btn.querySelector('.btn-loader').style.display = loading ? 'inline' : 'none';
+      btn.disabled = loading;
+    }
+
+    // ── Particle background ──
+    (function spawnParticles() {
+      const container = document.getElementById('bgParticles');
+      const emojis = ['🌱','🍃','♻️','🌿','🌎','⭐','💚'];
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = emojis[i % emojis.length];
+        p.style.left = Math.random() * 100 + 'vw';
+        p.style.top = Math.random() * 100 + 'vh';
+        p.style.animationDelay = (Math.random() * 8) + 's';
+        p.style.animationDuration = (6 + Math.random() * 8) + 's';
+        p.style.fontSize = (12 + Math.random() * 16) + 'px';
+        p.style.opacity = (0.08 + Math.random() * 0.12).toString();
+        container.appendChild(p);
+      }
+    })();
+  </script>
+</body>
+</html>
