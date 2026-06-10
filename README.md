@@ -164,5 +164,5 @@ This project is created for educational and portfolio purposes.
 ### 🌱 Small Actions. Big Impact.
 
 **Track your footprint. Change your future.**
-
+educational purpose
 </div>
