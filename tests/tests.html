@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Unit Tests</title>
+  <style>
+    :root {
+      --green:  #4ade80;
+      --red:    #f87171;
+      --amber:  #fbbf24;
+      --bg:     #060e14;
+      --bg2:    #0b1623;
+      --surface:#0f1e2e;
+      --border: rgba(255,255,255,0.08);
+      --text:   #e2e8f0;
+      --muted:  #64748b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 0.25rem;
+    }
+    .subtitle { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    /* Summary bar */
+    .summary {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .summary-item { display: flex; flex-direction: column; gap: 2px; }
+    .summary-num { font-size: 2rem; font-weight: 700; line-height: 1; }
+    .summary-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .pass-num { color: var(--green); }
+    .fail-num { color: var(--red); }
+    .total-num { color: var(--text); }
+
+    /* Progress bar */
+    .progress-bar { height: 6px; background: rgba(255,255,255,0.05); border-radius: 50px; margin-bottom: 2rem; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 50px; background: var(--green); transition: width 0.4s ease; }
+
+    /* Test list */
+    .test-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .test-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 0.875rem;
+    }
+    .test-item.pass { border-left: 3px solid var(--green); }
+    .test-item.fail { border-left: 3px solid var(--red); background: rgba(248,113,113,0.05); }
+    .test-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .test-desc { flex: 1; color: var(--text); }
+    .test-detail {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      font-family: 'Courier New', monospace;
+    }
+    .test-detail .actual { color: var(--red); }
+    .test-detail .expected-val { color: var(--green); }
+
+    /* Overall result banner */
+    .banner {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 2rem;
+    }
+    .banner.all-pass { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
+    .banner.has-fail { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: var(--red); }
+
+    button.rerun {
+      margin-top: 1rem;
+      padding: 0.6rem 1.5rem;
+      background: var(--green);
+      color: #000;
+      border: none;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    button.rerun:hover { background: #86efac; }
+  </style>
+</head>
+<body>
+
+  <h1>🧪 EcoTrack Unit Tests</h1>
+  <p class="subtitle">Zero-dependency browser test runner — all tests run automatically on page load.</p>
+
+  <div class="summary" id="summary">
+    <div class="summary-item"><span class="summary-num total-num" id="totalCount">0</span><span class="summary-label">Total</span></div>
+    <div class="summary-item"><span class="summary-num pass-num" id="passCount">0</span><span class="summary-label">Passed</span></div>
+    <div class="summary-item"><span class="summary-num fail-num" id="failCount">0</span><span class="summary-label">Failed</span></div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+  </div>
+
+  <div class="test-list" id="testList">
+    <div style="color:var(--muted);font-size:0.875rem;">⏳ Loading dependencies and running tests…</div>
+  </div>
+
+  <div id="banner"></div>
+
+  <div style="text-align:center">
+    <button class="rerun" onclick="location.reload()">↺ Re-run Tests</button>
+  </div>
+
+  <!--
+    Load EcoTrack modules in dependency order.
+    auth.js must come first (provides sanitizeInput, simpleHash, etc.)
+    data.js provides ECO_ACTIONS and EMISSION_FACTORS
+    calculator.js provides getGrade and generateTips
+    insights.js provides buildInsights
+  -->
+  <script src="../js/auth.js"></script>
+  <script src="../js/data.js"></script>
+  <script src="../js/calculator.js"></script>
+  <script src="../js/insights.js"></script>
+  <script src="tests.js"></script>
+
+  <script>
+    // Run all tests after DOM and scripts are ready
+    window.addEventListener('load', function () {
+      // Stub any missing globals that app.js would normally provide
+      // (we don't load the full app — just the modules we need to test)
+      if (typeof getUserData === 'undefined') window.getUserData = () => ({});
+      if (typeof saveUserData === 'undefined') window.saveUserData = () => {};
+      if (typeof showToast === 'undefined') window.showToast = () => {};
+      if (typeof checkAndAwardBadges === 'undefined') window.checkAndAwardBadges = () => {};
+      if (typeof updateDashboard === 'undefined') window.updateDashboard = () => {};
+      if (typeof switchTab === 'undefined') window.switchTab = () => {};
+
+      try {
+        runAllTests();
+        renderResults();
+      } catch (err) {
+        document.getElementById('testList').innerHTML =
+          `<div style="color:var(--red);padding:1rem;">❌ Fatal error during test run: <code>${err.message}</code><br><pre>${err.stack}</pre></div>`;
+      }
+    });
+
+    function renderResults() {
+      const list       = document.getElementById('testList');
+      const passCount  = document.getElementById('passCount');
+      const failCount  = document.getElementById('failCount');
+      const totalCount = document.getElementById('totalCount');
+      const progress   = document.getElementById('progressFill');
+      const banner     = document.getElementById('banner');
+
+      list.innerHTML = '';
+
+      _results.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'test-item ' + (r.ok ? 'pass' : 'fail');
+
+        const icon       = document.createElement('span');
+        icon.className   = 'test-icon';
+        icon.textContent = r.ok ? '✅' : '❌';
+
+        const body       = document.createElement('div');
+        body.style.flex  = '1';
+
+        const desc       = document.createElement('div');
+        desc.className   = 'test-desc';
+        desc.textContent = r.description;
+        body.appendChild(desc);
+
+        if (!r.ok) {
+          const detail     = document.createElement('div');
+          detail.className = 'test-detail';
+          detail.innerHTML =
+            `Got: <span class="actual">${JSON.stringify(r.actual)}</span> &nbsp;|&nbsp; Expected: <span class="expected-val">${JSON.stringify(r.expected)}</span>`;
+          body.appendChild(detail);
+        }
+
+        item.appendChild(icon);
+        item.appendChild(body);
+        list.appendChild(item);
+      });
+
+      const total = _passed + _failed;
+      passCount.textContent  = _passed;
+      failCount.textCount    = _failed;
+      failCount.textContent  = _failed;
+      totalCount.textContent = total;
+      progress.style.width   = total > 0 ? ((_passed / total) * 100) + '%' : '0%';
+      progress.style.background = _failed > 0 ? 'linear-gradient(90deg,#4ade80,#fbbf24)' : '#4ade80';
+
+      if (_failed === 0) {
+        banner.innerHTML = `<div class="banner all-pass">🎉 All ${_passed} tests passed!</div>`;
+      } else {
+        banner.innerHTML = `<div class="banner has-fail">⚠️ ${_failed} test${_failed > 1 ? 's' : ''} failed out of ${total}. See details above.</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>

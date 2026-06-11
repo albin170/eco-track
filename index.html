@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoTrack — Your Carbon Footprint Companion</title>
+  <meta name="description" content="EcoTrack helps you understand, track, and reduce your personal carbon footprint through smart insights, eco challenges, and AI guidance." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Skip to main content (keyboard/screen reader accessibility) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- ===== NAV ===== -->
+  <nav class="navbar" id="navbar" role="navigation" aria-label="Main navigation">
+    <div class="nav-brand">
+      <div class="nav-logo" aria-label="EcoTrack home">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <path d="M14 2C8 2 3 8 3 14c0 4 2 7.5 5 9.5L14 26l6-2.5c3-2 5-5.5 5-9.5C25 8 20 2 14 2z" fill="url(#leafGrad)" opacity="0.9"/>
+          <path d="M14 8c-3 2-5 5-5 8 0 1.5.5 3 1.5 4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M14 8c2 3 2 6 0 10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+          <defs>
+            <linearGradient id="leafGrad" x1="3" y1="2" x2="25" y2="26" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#4ade80"/>
+              <stop offset="100%" stop-color="#16a34a"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>EcoTrack</span>
+      </div>
+    </div>
+    <div class="nav-tabs" id="navTabs" role="tablist" aria-label="App sections">
+      <button class="nav-tab active" data-tab="dashboard" id="tab-dashboard" role="tab" aria-selected="true" aria-controls="section-dashboard">Dashboard</button>
+      <button class="nav-tab" data-tab="calculator" id="tab-calculator" role="tab" aria-selected="false" aria-controls="section-calculator">Calculator</button>
+      <button class="nav-tab" data-tab="actions" id="tab-actions" role="tab" aria-selected="false" aria-controls="section-actions">Actions</button>
+      <button class="nav-tab" data-tab="challenges" id="tab-challenges" role="tab" aria-selected="false" aria-controls="section-challenges">Challenges</button>
+      <button class="nav-tab" data-tab="leaderboard" id="tab-leaderboard" role="tab" aria-selected="false" aria-controls="section-leaderboard">Leaderboard</button>
+      <button class="nav-tab" data-tab="simulator" id="tab-simulator" role="tab" aria-selected="false" aria-controls="section-simulator">Simulator</button>
+      <button class="nav-tab" data-tab="hub" id="tab-hub" role="tab" aria-selected="false" aria-controls="section-hub">Learning Hub</button>
+      <button class="nav-tab" data-tab="insights" id="tab-insights" role="tab" aria-selected="false" aria-controls="section-insights">Insights</button>
+    </div>
+    <div class="nav-right">
+      <span class="nav-pts" id="navPoints" aria-label="Your green points">0 pts</span>
+      <div class="nav-eco-score" aria-label="Your Eco Score">
+        <span class="score-label">Eco Score</span>
+        <span class="score-value" id="navEcoScore">—</span>
+      </div>
+      <div class="nav-user-btn" id="navUserBtn" onclick="toggleUserMenu()" aria-haspopup="true" aria-expanded="false" aria-controls="userDropdown" role="button" tabindex="0">
+        <div class="nav-avatar" id="navUserAvatar" aria-hidden="true">?</div>
+        <span class="nav-username" id="navUserName">User</span>
+      </div>
+      <div class="user-dropdown" id="userDropdown" role="menu" aria-label="User menu" style="display:none">
+        <div class="dropdown-user-info">
+          <div class="dropdown-avatar" id="dropdownAvatar" aria-hidden="true">?</div>
+          <div>
+            <div class="dropdown-name" id="dropdownName">User</div>
+            <div class="dropdown-email" id="dropdownEmail">—</div>
+          </div>
+        </div>
+        <hr class="dropdown-divider" />
+        <button class="dropdown-item" onclick="logoutUser()" role="menuitem">🚪 Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO STRIP ===== -->
+  <div class="hero-strip" id="heroStrip">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1>Your planet.<br/><span class="hero-highlight">Your responsibility.</span></h1>
+        <p>Track your carbon footprint, take daily actions, and watch the difference you make. Every gram counts.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="heroTotal">—</span>
+          <span class="hero-stat-label">kg CO₂ / year</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="heroSaved">0</span>
+          <span class="hero-stat-label">kg saved this month</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="hero-stat">
+          <span class="hero-stat-num" id="heroStreak">0</span>
+          <span class="hero-stat-label">day streak 🔥</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-globe">
+      <div class="globe-ring"></div>
+      <div class="globe-ring ring2"></div>
+      <div class="globe-ring ring3"></div>
+      <div class="globe-core">
+        <span id="globeScore">?</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MAIN CONTENT ===== -->
+  <main class="main-content" id="main-content" role="main">
+
+    <!-- ======== DASHBOARD TAB ======== -->
+    <section class="tab-section active" id="section-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
+      <div class="section-grid">
+
+        <!-- Footprint Breakdown Card -->
+        <div class="card card--wide">
+          <div class="card-header">
+            <h2 class="card-title">Footprint Breakdown</h2>
+            <span class="card-badge">Your Profile</span>
+          </div>
+          <div class="breakdown-chart" id="breakdownChart">
+            <div class="breakdown-bar-wrap">
+              <div class="breakdown-bar-label"><span class="dot dot--transport"></span>Transport</div>
+              <div class="breakdown-bar-track"><div class="breakdown-bar-fill" id="barTransport" style="width:0%"></div></div>
+              <span class="breakdown-bar-val" id="valTransport">—</span>
+            </div>
+            <div class="breakdown-bar-wrap">
+              <div class="breakdown-bar-label"><span class="dot dot--food"></span>Food</div>
+              <div class="breakdown-bar-track"><div class="breakdown-bar-fill fill--food" id="barFood" style="width:0%"></div></div>
+              <span class="breakdown-bar-val" id="valFood">—</span>
+            </div>
+            <div class="breakdown-bar-wrap">
+              <div class="breakdown-bar-label"><span class="dot dot--energy"></span>Home Energy</div>
+              <div class="breakdown-bar-track"><div class="breakdown-bar-fill fill--energy" id="barEnergy" style="width:0%"></div></div>
+              <span class="breakdown-bar-val" id="valEnergy">—</span>
+            </div>
+            <div class="breakdown-bar-wrap">
+              <div class="breakdown-bar-label"><span class="dot dot--shopping"></span>Shopping</div>
+              <div class="breakdown-bar-track"><div class="breakdown-bar-fill fill--shopping" id="barShopping" style="width:0%"></div></div>
+              <span class="breakdown-bar-val" id="valShopping">—</span>
+            </div>
+          </div>
+          <div class="breakdown-cta" id="breakdownCta">
+            <p>Complete the calculator to see your footprint breakdown</p>
+            <button class="btn btn--primary" onclick="switchTab('calculator')">Calculate Now →</button>
+          </div>
+        </div>
+
+        <!-- Global Comparison Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Global Comparison</h2>
+          </div>
+          <div class="comparison-wrap" id="comparisonWrap">
+            <div class="comparison-item">
+              <span class="comp-country">🇮🇳 India avg</span>
+              <div class="comp-bar-track"><div class="comp-bar-fill" style="width:13%"></div></div>
+              <span class="comp-val">1.9t</span>
+            </div>
+            <div class="comparison-item comp-you" id="compYou" style="display:none">
+              <span class="comp-country">👤 You</span>
+              <div class="comp-bar-track"><div class="comp-bar-fill comp-fill-you" id="compYouBar" style="width:0%"></div></div>
+              <span class="comp-val" id="compYouVal">—</span>
+            </div>
+            <div class="comparison-item">
+              <span class="comp-country">🌍 World avg</span>
+              <div class="comp-bar-track"><div class="comp-bar-fill comp-fill-world" style="width:27%"></div></div>
+              <span class="comp-val">4.0t</span>
+            </div>
+            <div class="comparison-item">
+              <span class="comp-country">🇺🇸 USA avg</span>
+              <div class="comp-bar-track"><div class="comp-bar-fill comp-fill-usa" style="width:100%"></div></div>
+              <span class="comp-val">14.7t</span>
+            </div>
+            <div class="comparison-item">
+              <span class="comp-country">🎯 Paris target</span>
+              <div class="comp-bar-track"><div class="comp-bar-fill comp-fill-target" style="width:7%"></div></div>
+              <span class="comp-val">1.0t</span>
+            </div>
+          </div>
+          <p class="card-note" id="compNote">Complete calculator to see where you stand</p>
+        </div>
+
+        <!-- Trees Equivalent Card -->
+        <div class="card trees-card">
+          <div class="card-header">
+            <h2 class="card-title">🌳 Trees Needed</h2>
+          </div>
+          <div class="trees-display">
+            <span class="trees-num" id="treesEquivalent">—</span>
+            <span class="trees-label">trees to offset your yearly emissions</span>
+          </div>
+          <p class="card-note">One tree absorbs ~22 kg CO₂/year. Reducing is always better than offsetting!</p>
+        </div>
+
+        <!-- Monthly Trend Card -->
+        <div class="card card--wide">
+          <div class="card-header">
+            <h2 class="card-title">Monthly CO₂ Savings Trend</h2>
+            <span class="card-badge trend-badge" id="trendBadge">—</span>
+          </div>
+          <div class="trend-chart" id="trendChart">
+            <div class="trend-placeholder">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                <path d="M4 40 L12 28 L20 32 L28 20 L36 24 L44 12" stroke="#4ade80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="44" cy="12" r="3" fill="#4ade80"/>
+              </svg>
+              <p>Track actions daily to build your trend chart</p>
+            </div>
+            <canvas id="trendCanvas" width="600" height="160" style="display:none"></canvas>
+          </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Today's Actions</h2>
+            <span id="todayCount" class="card-badge">0 done</span>
+          </div>
+          <div class="quick-actions-list" id="quickActionsList"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======== CALCULATOR TAB ======== -->
+    <section class="tab-section" id="section-calculator" role="tabpanel" aria-labelledby="tab-calculator" tabindex="0">
+      <div class="calc-header">
+        <h2 class="section-title">Carbon Footprint Calculator</h2>
+        <p class="section-subtitle">Answer a few questions about your lifestyle to get your personalized carbon footprint estimate.</p>
+        <div class="calc-steps" id="calcSteps">
+          <div class="calc-step active" data-step="0"><div class="step-icon">🚗</div><span>Transport</span></div>
+          <div class="step-connector"></div>
+          <div class="calc-step" data-step="1"><div class="step-icon">🍽️</div><span>Food</span></div>
+          <div class="step-connector"></div>
+          <div class="calc-step" data-step="2"><div class="step-icon">🏠</div><span>Home</span></div>
+          <div class="step-connector"></div>
+          <div class="calc-step" data-step="3"><div class="step-icon">🛍️</div><span>Shopping</span></div>
+          <div class="step-connector"></div>
+          <div class="calc-step" data-step="4"><div class="step-icon">✅</div><span>Results</span></div>
+        </div>
+      </div>
+
+      <div class="calc-body">
+        <!-- Step 0: Transport -->
+        <div class="calc-panel active" id="panel-0">
+          <h3 class="panel-title">🚗 How do you get around?</h3>
+          <div class="question-group">
+            <label class="question-label" for="carKm">How many km do you drive per week?</label>
+            <div class="slider-wrap">
+              <input type="range" id="carKm" class="eco-slider" min="0" max="1000" value="100" step="10" />
+              <div class="slider-display"><span id="carKmVal">100</span> km/week</div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Car type</label>
+              <div class="option-pills" id="carType">
+                <button class="pill active" data-val="petrol">⛽ Petrol</button>
+                <button class="pill" data-val="diesel">🛢️ Diesel</button>
+                <button class="pill" data-val="hybrid">⚡ Hybrid</button>
+                <button class="pill" data-val="electric">🔋 Electric</button>
+                <button class="pill" data-val="none">🚶 No car</button>
+              </div>
+            </div>
+            <label class="question-label" for="flightShort">Short-haul flights per year (under 3h)</label>
+            <div class="slider-wrap">
+              <input type="range" id="flightShort" class="eco-slider" min="0" max="20" value="2" step="1"/>
+              <div class="slider-display"><span id="flightShortVal">2</span> flights</div>
+            </div>
+            <label class="question-label" for="flightLong">Long-haul flights per year (over 3h)</label>
+            <div class="slider-wrap">
+              <input type="range" id="flightLong" class="eco-slider" min="0" max="10" value="1" step="1"/>
+              <div class="slider-display"><span id="flightLongVal">1</span> flights</div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Public transport use</label>
+              <div class="option-pills" id="publicTransport">
+                <button class="pill active" data-val="rarely">Rarely</button>
+                <button class="pill" data-val="sometimes">Sometimes</button>
+                <button class="pill" data-val="often">Often</button>
+                <button class="pill" data-val="always">Always</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-nav"><span></span><button class="btn btn--primary" onclick="nextPanel(1)">Next: Food →</button></div>
+        </div>
+
+        <!-- Step 1: Food -->
+        <div class="calc-panel" id="panel-1">
+          <h3 class="panel-title">🍽️ What do you eat?</h3>
+          <div class="question-group">
+            <div class="option-row">
+              <label class="question-label">Diet type</label>
+              <div class="option-pills" id="dietType">
+                <button class="pill active" data-val="omnivore">🥩 Omnivore</button>
+                <button class="pill" data-val="flexitarian">🥗 Flexitarian</button>
+                <button class="pill" data-val="vegetarian">🥦 Vegetarian</button>
+                <button class="pill" data-val="vegan">🌱 Vegan</button>
+              </div>
+            </div>
+            <label class="question-label" for="meatFreq">How many times a week do you eat red meat?</label>
+            <div class="slider-wrap">
+              <input type="range" id="meatFreq" class="eco-slider" min="0" max="21" value="5" step="1"/>
+              <div class="slider-display"><span id="meatFreqVal">5</span> times/week</div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Local / seasonal food</label>
+              <div class="option-pills" id="localFood">
+                <button class="pill active" data-val="rarely">Rarely</button>
+                <button class="pill" data-val="sometimes">Sometimes</button>
+                <button class="pill" data-val="mostly">Mostly</button>
+                <button class="pill" data-val="always">Always</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Food waste</label>
+              <div class="option-pills" id="foodWaste">
+                <button class="pill active" data-val="lots">Lots</button>
+                <button class="pill" data-val="some">Some</button>
+                <button class="pill" data-val="little">Little</button>
+                <button class="pill" data-val="none">None</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-nav">
+            <button class="btn btn--ghost" onclick="nextPanel(0)">← Back</button>
+            <button class="btn btn--primary" onclick="nextPanel(2)">Next: Home →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Home -->
+        <div class="calc-panel" id="panel-2">
+          <h3 class="panel-title">🏠 Your home energy use</h3>
+          <div class="question-group">
+            <div class="option-row">
+              <label class="question-label">Home type</label>
+              <div class="option-pills" id="homeType">
+                <button class="pill active" data-val="apartment">🏢 Apartment</button>
+                <button class="pill" data-val="house-small">🏡 Small house</button>
+                <button class="pill" data-val="house-large">🏘️ Large house</button>
+              </div>
+            </div>
+            <label class="question-label" for="electricBill">Monthly electricity bill (₹)</label>
+            <div class="slider-wrap">
+              <input type="range" id="electricBill" class="eco-slider" min="0" max="10000" value="1500" step="100"/>
+              <div class="slider-display">₹<span id="electricBillVal">1500</span>/month</div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Energy source</label>
+              <div class="option-pills" id="energySource">
+                <button class="pill active" data-val="grid">🔌 Grid</button>
+                <button class="pill" data-val="partial-solar">☀️ Partial solar</button>
+                <button class="pill" data-val="full-solar">🌞 Full solar</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Heating / cooling</label>
+              <div class="option-pills" id="acUse">
+                <button class="pill active" data-val="heavy">Heavy AC</button>
+                <button class="pill" data-val="moderate">Moderate</button>
+                <button class="pill" data-val="minimal">Minimal</button>
+                <button class="pill" data-val="none">None</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">LED lighting</label>
+              <div class="option-pills" id="ledLights">
+                <button class="pill active" data-val="none">None</button>
+                <button class="pill" data-val="some">Some</button>
+                <button class="pill" data-val="all">All LEDs</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-nav">
+            <button class="btn btn--ghost" onclick="nextPanel(1)">← Back</button>
+            <button class="btn btn--primary" onclick="nextPanel(3)">Next: Shopping →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Shopping -->
+        <div class="calc-panel" id="panel-3">
+          <h3 class="panel-title">🛍️ Your shopping habits</h3>
+          <div class="question-group">
+            <div class="option-row">
+              <label class="question-label">Clothing purchases per year</label>
+              <div class="option-pills" id="clothingBuy">
+                <button class="pill active" data-val="minimal">Minimal (&lt;5)</button>
+                <button class="pill" data-val="moderate">Moderate (5-15)</button>
+                <button class="pill" data-val="frequent">Frequent (15+)</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Electronics purchases per year</label>
+              <div class="option-pills" id="electronicsBuy">
+                <button class="pill active" data-val="none">None</button>
+                <button class="pill" data-val="one">1 item</button>
+                <button class="pill" data-val="several">Several</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Do you buy second-hand / recycle?</label>
+              <div class="option-pills" id="secondHand">
+                <button class="pill active" data-val="never">Never</button>
+                <button class="pill" data-val="sometimes">Sometimes</button>
+                <button class="pill" data-val="often">Often</button>
+              </div>
+            </div>
+            <div class="option-row">
+              <label class="question-label">Online vs local shopping</label>
+              <div class="option-pills" id="onlineShopping">
+                <button class="pill active" data-val="mostly-online">Mostly online</button>
+                <button class="pill" data-val="mixed">Mixed</button>
+                <button class="pill" data-val="mostly-local">Mostly local</button>
+              </div>
+            </div>
+          </div>
+          <div class="panel-nav">
+            <button class="btn btn--ghost" onclick="nextPanel(2)">← Back</button>
+            <button class="btn btn--primary" onclick="calculateFootprint()">Calculate My Footprint 🌱</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Results -->
+        <div class="calc-panel" id="panel-4">
+          <div class="results-hero">
+            <div class="results-ring-wrap">
+              <svg class="results-ring" viewBox="0 0 200 200" width="200" height="200">
+                <circle cx="100" cy="100" r="85" stroke="#1e293b" stroke-width="16" fill="none"/>
+                <circle cx="100" cy="100" r="85" id="resultsArc"
+                  stroke="url(#arcGrad)" stroke-width="16" fill="none"
+                  stroke-linecap="round"
+                  stroke-dasharray="534"
+                  stroke-dashoffset="534"
+                  transform="rotate(-90 100 100)"/>
+                <defs>
+                  <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#4ade80"/>
+                    <stop offset="100%" stop-color="#22d3ee"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="results-ring-center">
+                <span class="results-big" id="resultsTonnes">—</span>
+                <span class="results-unit">tonnes CO₂/yr</span>
+              </div>
+            </div>
+            <div class="results-grade-wrap">
+              <div class="results-grade" id="resultsGrade">?</div>
+              <p class="results-grade-label" id="resultsGradeLabel">Calculating...</p>
+            </div>
+          </div>
+          <div class="results-breakdown" id="resultsBreakdown"></div>
+          <div class="results-tips" id="resultsTips"></div>
+          <div class="panel-nav" style="justify-content:center; gap:1rem; flex-wrap:wrap;">
+            <button class="btn btn--ghost" onclick="nextPanel(0)">← Recalculate</button>
+            <button class="btn btn--primary" onclick="saveAndGoToDashboard()">Save & View Dashboard 🌍</button>
+            <button class="btn btn--success" onclick="switchTab('actions')">See Actions I Can Take →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== ACTIONS TAB ======== -->
+    <section class="tab-section" id="section-actions" role="tabpanel" aria-labelledby="tab-actions" tabindex="0">
+      <div class="actions-header">
+        <h2 class="section-title">Eco Actions</h2>
+        <p class="section-subtitle">Small daily actions add up. Check off what you're doing today and earn green points.</p>
+        <div class="actions-filter" id="actionsFilter">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="transport">🚗 Transport</button>
+          <button class="filter-btn" data-filter="food">🍽️ Food</button>
+          <button class="filter-btn" data-filter="energy">⚡ Energy</button>
+          <button class="filter-btn" data-filter="shopping">🛍️ Shopping</button>
+        </div>
+      </div>
+      <div class="actions-grid" id="actionsGrid"></div>
+    </section>
+
+    <!-- ======== CHALLENGES TAB ======== -->
+    <section class="tab-section" id="section-challenges" role="tabpanel" aria-labelledby="tab-challenges" tabindex="0">
+      <div class="section-header-block">
+        <h2 class="section-title">🎯 Weekly Eco Challenges</h2>
+        <p class="section-subtitle">Take on eco missions and earn Green Points and badges. Log your progress below!</p>
+      </div>
+      <div class="challenges-grid" id="challengesGrid"></div>
+    </section>
+
+    <!-- ======== LEADERBOARD TAB ======== -->
+    <section class="tab-section" id="section-leaderboard" role="tabpanel" aria-labelledby="tab-leaderboard" tabindex="0">
+      <div class="section-header-block">
+        <h2 class="section-title">🏆 Community Leaderboard</h2>
+        <p class="section-subtitle">See how you rank against the EcoTrack community. Earn points through actions and challenges.</p>
+      </div>
+
+      <div class="leaderboard-layout">
+        <!-- User rank summary -->
+        <div class="lb-user-card">
+          <div class="lb-user-avatar" id="navUserAvatar2">?</div>
+          <div class="lb-user-info">
+            <div class="lb-user-name" id="lbUserName">You</div>
+            <div class="lb-user-rank" id="userRankDisplay">#— of —</div>
+          </div>
+          <div class="lb-user-pts" id="userPointsDisplay">0 pts</div>
+        </div>
+
+        <!-- Badges section -->
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div class="card-header">
+            <h2 class="card-title">🏅 Your Badges</h2>
+            <span class="card-badge" id="badgeCountLabel">0 earned</span>
+          </div>
+          <div class="badges-grid" id="badgesGrid"></div>
+        </div>
+
+        <!-- Leaderboard list -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Community Rankings</h2>
+          </div>
+          <div class="leaderboard-list" id="leaderboardList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== SIMULATOR TAB ======== -->
+    <section class="tab-section" id="section-simulator" role="tabpanel" aria-labelledby="tab-simulator" tabindex="0">
+      <div class="section-header-block">
+        <h2 class="section-title">🔮 Future Earth Simulator</h2>
+        <p class="section-subtitle">Move the sliders to see how lifestyle changes could reduce your emissions in real time.</p>
+      </div>
+
+      <div class="simulator-layout">
+        <div class="sim-sliders-panel">
+          <div class="sim-sliders" id="simSliders"></div>
+          <button class="btn btn--ghost" onclick="resetSimulator()" style="margin-top:1rem; width:100%;">↺ Reset All</button>
+        </div>
+
+        <div class="sim-results-panel">
+          <!-- Progress ring -->
+          <div class="sim-ring-wrap">
+            <svg width="160" height="160" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="54" stroke="#1e293b" stroke-width="14" fill="none"/>
+              <circle cx="80" cy="80" r="54" id="simProgressRing"
+                stroke="#94a3b8" stroke-width="14" fill="none"
+                stroke-linecap="round"
+                stroke-dasharray="339"
+                stroke-dashoffset="339"
+                transform="rotate(-90 80 80)"
+                style="transition: stroke-dashoffset 0.4s, stroke 0.4s"/>
+            </svg>
+            <div class="sim-ring-center">
+              <span class="sim-pct" id="simPctText">0%</span>
+              <span class="sim-pct-label">reduced</span>
+            </div>
+          </div>
+
+          <!-- Result numbers -->
+          <div class="sim-results-grid">
+            <div class="sim-result-card">
+              <span class="sim-result-icon">🌍</span>
+              <span class="sim-result-num" id="simCo2Saved" data-current="0">0 kg</span>
+              <span class="sim-result-label">CO₂ saved/year</span>
+            </div>
+            <div class="sim-result-card">
+              <span class="sim-result-icon">💰</span>
+              <span class="sim-result-num" id="simMoneySaved" data-current="0">0</span>
+              <span class="sim-result-label">₹ saved/year</span>
+            </div>
+            <div class="sim-result-card">
+              <span class="sim-result-icon">🌳</span>
+              <span class="sim-result-num" id="simTreesSaved" data-current="0">0</span>
+              <span class="sim-result-label">Trees equivalent</span>
+            </div>
+            <div class="sim-result-card">
+              <span class="sim-result-icon">📉</span>
+              <span class="sim-result-num" id="simTonnesSaved" data-current="0">0 t</span>
+              <span class="sim-result-label">Tonnes CO₂ reduced</span>
+            </div>
+          </div>
+
+          <div class="sim-impact-desc" id="simImpactDesc">Move the sliders above to see your potential impact!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======== LEARNING HUB TAB ======== -->
+    <section class="tab-section" id="section-hub" role="tabpanel" aria-labelledby="tab-hub" tabindex="0">
+      <div class="section-header-block">
+        <h2 class="section-title">📚 Learning Hub</h2>
+        <p class="section-subtitle">Expand your eco-knowledge with articles and interactive quizzes. Earn points for every quiz you complete!</p>
+      </div>
+      <div class="hub-grid" id="hubGrid"></div>
+    </section>
+
+    <!-- ======== INSIGHTS TAB ======== -->
+    <section class="tab-section" id="section-insights" role="tabpanel" aria-labelledby="tab-insights" tabindex="0">
+      <div class="insights-header">
+        <h2 class="section-title">Personalized Insights</h2>
+        <p class="section-subtitle">Smart recommendations based on your lifestyle choices.</p>
+      </div>
+      <div class="insights-grid" id="insightsGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg width="20" height="20" viewBox="0 0 28 28" fill="none">
+          <path d="M14 2C8 2 3 8 3 14c0 4 2 7.5 5 9.5L14 26l6-2.5c3-2 5-5.5 5-9.5C25 8 20 2 14 2z" fill="url(#fLeafGrad)"/>
+          <defs><linearGradient id="fLeafGrad" x1="3" y1="2" x2="25" y2="26"><stop offset="0%" stop-color="#4ade80"/><stop offset="100%" stop-color="#16a34a"/></linearGradient></defs>
+        </svg>
+        <span>EcoTrack</span>
+      </div>
+      <p class="footer-text">Helping people live lighter on the planet. <br/>CO₂ data based on IPCC and IEA reports.</p>
+      <p class="footer-copy">Made with 💚 for a greener tomorrow</p>
+    </div>
+  </footer>
+
+  <!-- ===== CHATBOT FLOATING BUTTON ===== -->
+  <button class="chatbot-fab" onclick="openChatbot()" aria-label="Open EcoBot AI sustainability assistant" id="chatbotFab">
+    <span class="fab-icon" aria-hidden="true">🤖</span>
+    <span class="fab-label">EcoBot</span>
+  </button>
+
+  <!-- ===== CHATBOT MODAL ===== -->
+  <div class="modal-overlay chatbot-modal" id="chatbotModal" role="dialog" aria-modal="true" aria-label="EcoBot AI Chat" aria-hidden="true">
+    <div class="chatbot-window">
+      <div class="chatbot-header">
+        <div class="chatbot-title">
+          <span class="chatbot-avatar" aria-hidden="true">🤖</span>
+          <div>
+            <div class="chatbot-name">EcoBot</div>
+            <div class="chatbot-status">AI Sustainability Assistant • Online</div>
+          </div>
+        </div>
+        <button class="chatbot-close" onclick="closeChatbot()" aria-label="Close chat">&#x2715;</button>
+      </div>
+      <div class="chat-messages" id="chatMessages" role="log" aria-live="polite" aria-label="Chat conversation"></div>
+      <div class="chat-suggestions" role="group" aria-label="Quick question suggestions">
+        <button class="chat-chip" onclick="sendSuggestion('What should I fix first?')">What to fix first?</button>
+        <button class="chat-chip" onclick="sendSuggestion('How close am I to the Paris target?')">Paris target gap</button>
+        <button class="chat-chip" onclick="sendSuggestion('Show my top saving opportunity')">Top saving</button>
+        <button class="chat-chip" onclick="sendSuggestion('Eco friendly food tips')">Food tips</button>
+      </div>
+      <div class="chat-input-row">
+        <label for="chatInput" class="sr-only">Message EcoBot</label>
+        <input type="text" id="chatInput" class="chat-input" placeholder="Ask EcoBot anything…" aria-label="Type a message to EcoBot" />
+        <button class="chat-send" onclick="sendChatMessage()" aria-label="Send message">➤</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ARTICLE MODAL ===== -->
+  <div class="modal-overlay article-modal" id="articleModal" role="dialog" aria-modal="true" aria-labelledby="articleTitle" aria-hidden="true">
+    <div class="article-window">
+      <div class="article-header">
+        <h2 class="article-title" id="articleTitle">Article</h2>
+        <button class="article-close" id="closeArticle" onclick="closeArticleModal()" aria-label="Close article">✕</button>
+      </div>
+      <div class="article-body" id="articleBody"></div>
+      <div class="article-quiz" id="articleQuiz"></div>
+    </div>
+  </div>
+
+  <!-- ===== TOAST ===== -->
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===== SCRIPTS ===== -->
+  <script src="js/auth.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/actions.js"></script>
+  <script src="js/insights.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script src="js/gamification.js"></script>
+  <script src="js/challenges.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/hub.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // User dropdown toggle
+    function toggleUserMenu() {
+      const dd  = document.getElementById('userDropdown');
+      const btn = document.getElementById('navUserBtn');
+      if (!dd) return;
+      const isOpen = dd.style.display !== 'none';
+      dd.style.display = isOpen ? 'none' : 'block';
+      if (btn) btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+      // Populate dropdown
+      const user = getCurrentUser();
+      if (user) {
+        const da = document.getElementById('dropdownAvatar');
+        const dn = document.getElementById('dropdownName');
+        const de = document.getElementById('dropdownEmail');
+        if (da) { da.textContent = getAvatarInitials(user.username); da.style.background = getAvatarColor(user.username); }
+        if (dn) dn.textContent = user.username;
+        if (de) de.textContent = user.email;
+
+        // Also update leaderboard avatar
+        const la = document.getElementById('navUserAvatar2');
+        const ln = document.getElementById('lbUserName');
+        if (la) { la.textContent = getAvatarInitials(user.username); la.style.background = getAvatarColor(user.username); }
+        if (ln) ln.textContent = user.username;
+      }
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+      const btn = document.getElementById('navUserBtn');
+      const dd  = document.getElementById('userDropdown');
+      if (dd && btn && !btn.contains(e.target)) {
+        dd.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
